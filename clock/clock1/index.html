@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html class="h-full">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" id="favicon">
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-slate-800 text-slate-50 w-full h-full flex items-center justify-center">
+        <div id="datetime" class="font-mono text-9xl font-light tracking-tight"></div>
+        <script>
+            function zeroPadding2(n) {
+                n = "0" + n;
+                return n.substring(n.length - 2, n.length);
+            }
+            function drawDateTime(now) {
+                const datetimeEl = document.getElementById("datetime");
+                const datetime = 
+                    zeroPadding2(now.getMonth() + 1) + "/" +
+                    zeroPadding2(now.getDate()) + " " +
+                    zeroPadding2(now.getHours()) + ":" +
+                    zeroPadding2(now.getMinutes());
+                datetimeEl.innerHTML = datetime;
+                document.title = datetime;
+            }
+            function drawFavicon(now) {
+                const canvasEl = document.createElement("canvas");
+                canvasEl.width = 32;
+                canvasEl.height = 32;
+                const ctx = canvasEl.getContext("2d");
+                ctx.strokeStyle = "#1e293b";
+                ctx.lineCap = "round";
+                ctx.lineWidth = 2;
+
+                ctx.translate(16, 16);
+                ctx.rotate(-Math.PI/2);
+
+                ctx.beginPath();
+                ctx.arc(0, 0, 14, 0, Math.PI * 2);
+                ctx.stroke();
+
+                ctx.save();
+                ctx.rotate((now.getHours() % 12) * (Math.PI/6) + now.getMinutes() * (Math.PI/360) + now.getSeconds() * (Math.PI/21600));
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(8, 0);
+                ctx.stroke();
+                ctx.restore();
+
+                ctx.save();
+                ctx.rotate(now.getMinutes() * (Math.PI/30) + now.getSeconds() * (Math.PI/1800));
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(11, 0);
+                ctx.stroke();
+                ctx.restore();
+
+                ctx.save();
+                ctx.rotate(now.getSeconds() * (Math.PI/30));
+                ctx.strokeStyle = "#991b1b";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(11, 0);
+                ctx.stroke();
+                ctx.restore();
+
+                let faviconEl = document.getElementById("favicon");
+                if (faviconEl) {
+                    faviconEl.remove();
+                }
+                faviconEl = document.createElement("link");
+                faviconEl.id = "favicon"
+                faviconEl.type = "image/png";
+                faviconEl.rel = "icon";
+                faviconEl.href = canvasEl.toDataURL("image/png");
+                document.getElementsByTagName("head")[0].appendChild(faviconEl);
+                canvasEl.remove();
+            }
+            function draw() {
+                const now = new Date();
+                drawDateTime(now);
+                drawFavicon(now);
+                // requestAnimationFrame(draw);
+                setTimeout(() => {
+                    draw();
+                }, 200); // 5FPS
+            }
+            draw()
+        </script>
+    </body>
+</html>
