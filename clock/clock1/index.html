@@ -5,9 +5,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" type="image/png" id="favicon">
         <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100&family=Xanh+Mono&display=swap" rel="stylesheet">
+        <style>
+            #datetime {
+                font-family: 'Xanh Mono', monospace;
+            }
+        </style>
     </head>
     <body class="bg-slate-800 text-slate-50 w-full h-full flex items-center justify-center">
-        <div id="datetime" class="font-mono text-9xl font-light tracking-tight"></div>
+        <div id="datetime"></div>
         <script>
             function zeroPadding2(n) {
                 n = "0" + n;
@@ -88,6 +96,14 @@
                     draw();
                 }, 200); // 5FPS
             }
+            function resetFontSize() {
+                const datetimeEl = document.getElementById("datetime");
+                const length = 13; // " MM/DD HH:MI "
+                const fontSize = Math.floor(document.body.clientWidth / length * 2);
+                datetimeEl.style.fontSize = fontSize + "px";
+            }
+            window.onresize = resetFontSize;
+            resetFontSize();
             draw()
         </script>
     </body>
