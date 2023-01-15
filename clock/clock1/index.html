@@ -44,6 +44,7 @@
                 const canvasEl = document.createElement("canvas");
                 canvasEl.width = 32;
                 canvasEl.height = 32;
+
                 const ctx = canvasEl.getContext("2d");
                 ctx.strokeStyle = "#1e293b";
                 ctx.lineCap = "round";
@@ -84,16 +85,7 @@
                 ctx.stroke();
                 ctx.restore();
 
-                let faviconEl = document.getElementById("favicon");
-                if (faviconEl) {
-                    faviconEl.remove();
-                }
-                faviconEl = document.createElement("link");
-                faviconEl.id = "favicon"
-                faviconEl.type = "image/png";
-                faviconEl.rel = "icon";
-                faviconEl.href = canvasEl.toDataURL("image/png");
-                document.getElementsByTagName("head")[0].appendChild(faviconEl);
+                document.getElementById("favicon").href = canvasEl.toDataURL("image/png");
                 canvasEl.remove();
             }
             function draw() {
