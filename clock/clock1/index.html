@@ -111,6 +111,19 @@
                 const fontSize = Math.floor(document.body.clientWidth / length * 2);
                 datetimeEl.style.fontSize = fontSize + "px";
             }
+            function toggleFullScreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+            document.addEventListener("click", () => {
+                toggleFullScreen();
+            });
+            document.addEventListener("touchend", () => {
+                toggleFullScreen();
+            })
             window.onresize = resetFontSize;
             resetFontSize();
             draw()
