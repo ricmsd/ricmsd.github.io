@@ -19,17 +19,12 @@
         <style>
             body {
                 font-family: 'Xanh Mono', monospace;
-            }
-            #time {
-                text-shadow: 0 0 4px #f8fafc;
-            }
-            #date {
-                text-shadow: 0 0 2px #64748b;
+                text-shadow: 0 0 4px;
             }
         </style>
     </head>
-    <body class="bg-slate-800 text-slate-50 w-full h-full flex items-center justify-center">
-        <div id="time">00:00:00</div>
+    <body class="bg-slate-800 w-full h-full flex items-center justify-center">
+        <div id="time" class="text-slate-50">00:00:00</div>
         <div id="date" class="text-slate-500 text-right fixed right-4 bottom-2">Mon Jan 16 2023 GMT-9</div>
         <script>
             function zeroPadding2(n) {
@@ -60,6 +55,7 @@
                     draw();
                 }, 100); // 10FPS
             }
+
             function resetFontSize() {
                 const timeEl = document.getElementById("time");
                 const length = 10; // " HH:MI:SS "
@@ -68,6 +64,9 @@
                 const dateEl = document.getElementById("date");
                 dateEl.style.fontSize = (fontSize / 10) + "px";
             }
+            window.onresize = resetFontSize;
+            resetFontSize();
+
             function toggleFullScreen() {
                 if (!document.fullscreenElement) {
                     document.documentElement.requestFullscreen();
@@ -80,9 +79,40 @@
             });
             document.addEventListener("touchend", () => {
                 toggleFullScreen();
-            })
-            window.onresize = resetFontSize;
-            resetFontSize();
+            });
+
+            var colors = [
+                "slate", "gray", "zinc", "neutral", "stone", "red", "orange", "amber", "yellow", "lime",
+                "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia",
+                "pink", "rose"];
+            var storageKeyColor = "clock-clock2-color";
+            var currentColor = parseInt(localStorage.getItem(storageKeyColor) | "0");
+            function changeColor() {
+                let changeClass = (el) => {
+                    el.className = el.className.replace(/(text|bg)-[a-z]+-([0-9]+)/, '$1-' + colors[currentColor] + '-$2');
+                    return el;
+                };
+                changeClass(document.getElementsByTagName("body")[0]);
+                changeClass(document.getElementById("time"));
+                changeClass(document.getElementById("date"));
+            }
+            document.addEventListener("wheel", (event) => {
+                if (event.deltaY != 0) {
+                    if (event.deltaY > 0) {
+                        if (++currentColor >= colors.length) {
+                            currentColor = 0;
+                        }
+                    } else {
+                        if (--currentColor <= 0) {
+                            currentColor = colors.length - 1;
+                        }
+                    }
+                    changeColor();
+                    localStorage.setItem(storageKeyColor, "" + currentColor);
+                }
+            });
+            changeColor();
+
             draw()
         </script>
     </body>
