@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html class="h-full">
+    <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-PN6PTLXKMH"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-PN6PTLXKMH');
+        </script>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100&family=Xanh+Mono&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: 'Xanh Mono', monospace;
+            }
+            #time {
+                text-shadow: 0 0 4px #f8fafc;
+            }
+            #date {
+                text-shadow: 0 0 2px #64748b;
+            }
+        </style>
+    </head>
+    <body class="bg-slate-800 text-slate-50 w-full h-full flex items-center justify-center">
+        <div id="time">00:00:00</div>
+        <div id="date" class="text-slate-500 text-right fixed right-4 bottom-2">Mon Jan 16 2023 GMT-9</div>
+        <script>
+            function zeroPadding2(n) {
+                n = "0" + n;
+                return n.substring(n.length - 2, n.length);
+            }
+            function drawDateTime(now) {
+                const timeEl = document.getElementById("time");
+                const time = 
+                    zeroPadding2(now.getHours()) + ":" +
+                    zeroPadding2(now.getMinutes()) + ":" +
+                    zeroPadding2(now.getSeconds());
+                if (timeEl.innerHTML != time) {
+                    timeEl.innerHTML = time;
+                    document.title = time;
+                }
+                const dateEl = document.getElementById("date");
+                const date = now.toDateString() + " GMT" + (now.getTimezoneOffset() / 60);
+                if (dateEl.innerHTML != date) {
+                    dateEl.innerHTML = date;
+                }
+            }
+            function draw() {
+                const now = new Date();
+                drawDateTime(now);
+                // requestAnimationFrame(draw);
+                setTimeout(() => {
+                    draw();
+                }, 100); // 10FPS
+            }
+            function resetFontSize() {
+                const timeEl = document.getElementById("time");
+                const length = 10; // " HH:MI:SS "
+                const fontSize = Math.floor(document.body.clientWidth / length * 2);
+                timeEl.style.fontSize = fontSize + "px";
+                const dateEl = document.getElementById("date");
+                dateEl.style.fontSize = (fontSize / 10) + "px";
+            }
+            function toggleFullScreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+            document.addEventListener("click", () => {
+                toggleFullScreen();
+            });
+            document.addEventListener("touchend", () => {
+                toggleFullScreen();
+            })
+            window.onresize = resetFontSize;
+            resetFontSize();
+            draw()
+        </script>
+    </body>
+</html>
